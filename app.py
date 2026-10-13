@@ -13,7 +13,7 @@ from psycopg.rows import dict_row
 
 load_dotenv()
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder="public", static_url_path="")
 
 app.secret_key = os.environ.get("SECRET_KEY")
 if not app.secret_key:

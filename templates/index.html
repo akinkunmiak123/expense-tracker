@@ -16,7 +16,7 @@
     {% endwith %}
 
     <h2>Add Expense</h2>
-    <form action="{{ url_for('add_expense') }}" method="POST">
+    <form action="{{ url_for('add_expense') }}" method="POST" data-loading-text="Adding...">
         <label>
             Amount
             <input type="number" name="amount" step="0.01" min="0.01" required>
@@ -120,7 +120,7 @@
                 <td>{{ "%.2f"|format(expense.amount) }}</td>
                                 <td class="actions">
                                     <a href="{{ url_for('edit_expense', expense_id=expense.id) }}">Edit</a>
-                                    <form action="{{ url_for('delete_expense', expense_id=expense.id) }}" method="POST"
+                                    <form action="{{ url_for('delete_expense', expense_id=expense.id) }}" method="POST" data-loading-text="Deleting..."
                                         onsubmit="return confirm('Delete this expense?');">
                                         <button type="submit" class="delete">Delete</button>
                                     </form>
@@ -202,6 +202,27 @@
                         });
                     });
             </script>
+                <script>
+                    document.querySelectorAll("form").forEach(form => {
+                        if (form.method !== "post") return;
+
+                        form.addEventListener("submit", event => {
+                            // Skip if something else cancelled the submit (e.g. the delete confirm dialog)
+                            if (event.defaultPrevented) return;
+
+                            const button = form.querySelector("button[type='submit']");
+                            if (!button) return;
+
+                            button.disabled = true;
+                            button.textContent = form.dataset.loadingText || "Please wait...";
+                        });
+                    });
+
+                    // If the user returns with the browser's Back button, reload so buttons aren't stuck disabled
+                    window.addEventListener("pageshow", event => {
+                        if (event.persisted) location.reload();
+                    });
+                </script>
 </body>
 
 </html>

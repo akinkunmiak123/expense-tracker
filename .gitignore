@@ -1,4 +1,13 @@
+# Secrets: never commit these
 .env
+
+# Python
 venv/
 __pycache__/
+*.pyc
+
+# Old local database
 expenses.db
+
+# Vercel
+.vercel/
